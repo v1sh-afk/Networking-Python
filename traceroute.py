@@ -1,12 +1,12 @@
 import subprocess
 from twisted.internet import reactor, defer
 
-class PingProtocol:
+class TracerouteCmd:
     def __init__(self):
         self.deferred = defer.Deferred()
 
-    def ping(self, host):
-        process = subprocess.Popen(['ping', host], stdout=subprocess.PIPE)
+    def traceroute(self, host):
+        process = subprocess.Popen(['traceroute', '-m', '10', host], stdout=subprocess.PIPE)
         output, error = process.communicate()
         if error:
             self.deferred.errback(error)
@@ -19,7 +19,7 @@ def print_result(result):
 def print_error(failure):
     print(failure)
 
-protocol = PingProtocol()
-protocol.ping('google.com')
+protocol = TracerouteCmd()
+protocol.traceroute('google.com')
 protocol.deferred.addCallbacks(print_result, print_error)
 reactor.run()
